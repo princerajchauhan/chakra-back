@@ -33,7 +33,7 @@ const startConnection = async () => {
         const io = socket(app, {
             pingTimeout: 60000,
             cors: {
-                origin: "https://prince-chat.vercel.app/"
+                origin: "*"
             }
         })
 
