@@ -17,14 +17,16 @@ const signup = async (req, res) => {
         const hashPassword = await bcrypt.hash(detail.password, 10)
         detail.password = hashPassword
         // detail.pic = "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
-        const user = await (await User.create({ ...detail })).select("-password")
+        const user = await User.create({ ...detail })
+        console.log(user)
         if (!user) {
             return res.status(400).send({ msg: "Failed to create user" })
         }
+        user.password = undefined
         const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "24h" })
         res.status(200).send({ msg: "user registered successfully", msg2: true, user, token })
     } catch (error) {
-        res.status(500).send({ msg: error })
+        res.status(500).send({ msg: error.messsage })
     }
 }
 
