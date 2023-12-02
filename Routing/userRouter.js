@@ -6,6 +6,6 @@ const router = require("express").Router()
 router.post("/register",signup)
 router.post("/login",login)
 router.get("/users",authMidd ,allUsers)
-router.post("/updateprofile",authMidd ,updateProfile)
+router.put("/updateprofile",authMidd ,updateProfile)
 
 module.exports = router

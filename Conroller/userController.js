@@ -9,7 +9,7 @@ const User = require("../Models/userModel")
 const signup = async (req, res) => {
     try {
         const detail = req.body
-        // console.log(detail)
+        console.log(detail)
         const dupicate = await User.findOne({ email: detail.email })
         if (dupicate) {
             return res.send({ msg: "user already registered with this email", msg2: false })
@@ -60,6 +60,7 @@ const allUsers = async (req, res) => {
 const updateProfile = async(req, res) =>{
     try {
         const profile = req.body
+        console.log(profile)
         const change = await User.findByIdAndUpdate(req.user._id, profile, {new: true}).select("-password")
         res.status(200).send({msg2: true, msg:'Profile updated successfully', profileUrl: change.profile})
     } catch (error) {
