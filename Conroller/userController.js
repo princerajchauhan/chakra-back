@@ -17,7 +17,7 @@ const signup = async (req, res) => {
         const hashPassword = await bcrypt.hash(detail.password, 10)
         detail.password = hashPassword
         // detail.pic = "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
-        const user = await User.create({ ...detail })
+        const user = await (await User.create({ ...detail })).select("-password")
         if (!user) {
             return res.status(400).send({ msg: "Failed to create user" })
         }
@@ -39,6 +39,7 @@ const login = async (req, res) => {
     if (!validpass) {
         return res.send({ msg: "your email and password does not match", msg2: false })
     }
+    find.password = undefined
     const token = jwt.sign({ id: find._id }, process.env.SECRET_KEY, { expiresIn: "24h" })
     res.status(200).send({ msg: "user successfully logged in", msg2: true, user: find, token: token })
 }
@@ -59,10 +60,9 @@ const allUsers = async (req, res) => {
 // UPDATE PROFILE
 const updateProfile = async(req, res) =>{
     try {
-        const profile = req.body
-        console.log(profile)
-        const change = await User.findByIdAndUpdate(req.user._id, profile, {new: true}).select("-password")
-        res.status(200).send({msg2: true, msg:'Profile updated successfully', profileUrl: change.profile})
+        const {newProfile, token} = req.body
+        const change = await User.findByIdAndUpdate(req.user._id, {profile: newProfile}, {new: true}).select("-password")
+        res.status(200).send({msg2: true, msg:'Profile updated successfully', token, user: change})
     } catch (error) {
         res.send({msg2: false, msg: error.message})
     }
