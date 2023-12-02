@@ -56,4 +56,17 @@ const allUsers = async (req, res) => {
     res.status(200).send(users)
 }
 
-module.exports = { signup, login, allUsers }
+// UPDATE PROFILE
+const updateProfile = async(req, res) =>{
+    try {
+        const profile = req.body
+        const change = await User.findByIdAndUpdate(req.user._id, profile, {new: true}).select("-password")
+        res.status(200).send({msg2: true, msg:'Profile updated successfully', profileUrl: change.profile})
+    } catch (error) {
+        res.send({msg2: false, msg: error.message})
+    }
+}
+
+
+
+module.exports = { signup, login, allUsers, updateProfile }
